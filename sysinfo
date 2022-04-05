@@ -34,18 +34,27 @@ show_help () {
 # Print help message
     margin="  "
     padding=-14
-    printf "USAGE: $PROGNAME [-h, --help] [-i, --ip] [-o, --off]\n"
-    printf "%46s\n \n" "[-d, --distros] [--DISTRO_NAME]"
+    printf "USAGE: $PROGNAME [-h, --help] [-v, --version]\n"
+    printf "%${padding}s %s\n" "" "[-i, --ip] [-o, --off]"\
+           "" "[-d, --distro] [--DISTRO_NAME]"
+    printf " \n"
 
     printf "$margin%${padding}s %s\n"\
-        "--DISTRO_NAME" "The distro's ascii art to print." \
+        "--DISTRO_NAME" "The distro logo to print." \
         "" "The default is android logo." \
         "-d, --distros" "Show available distro logos." \
         "-o, --off" "Disable ascii art logo." \
         "-i, --ip" "Show public IPv4 address." \
+        "-v, --version" "Show version information." \
         "-h, --help" "Print this help message."
 
     printf " \nExample: \`$PROGNAME --kali\` --> will print kali logo\n"
+    exit 0
+}
+
+show_version () {
+    version="v0.1"
+    printf "sysinfo, version $version\n"
     exit 0
 }
 
@@ -106,6 +115,9 @@ do
             ;;
         -d|--distros)
             show_distros
+            ;;
+        -v|--version)
+            show_version
             ;;
         -o|--off)
             LOGO_ON=false
