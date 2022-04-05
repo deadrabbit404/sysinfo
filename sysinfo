@@ -1,0 +1,128 @@
+#!/system/bin/sh
+# sysinfo - Prints system information with an ascii art logo
+# By: DeadRabbit
+# Telegram: https://t.me/deadrabbit404
+# Github: https://deadrabbit404
+
+PROGNAME=${0##*/}
+LOGODIR="/sdcard/t-ui/logos"
+LOGO="android"
+BRAND=`getprop ro.product.brand`
+MODEL=`getprop ro.product.model`
+CODENAME=`getprop ro.product.device`
+ANDROID_VERSION=`getprop ro.build.version.release`
+CPUARCH=`getprop ro.product.cpu.abi`
+CPUCORE=`grep -c "^processor" /proc/cpuinfo`
+CPUFREQ=`< /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq`
+MEMTOTAL=`grep MemTotal /proc/meminfo | awk '{ print $2 }'`
+MEMAVAIL=`grep MemAvail /proc/meminfo | awk '{ print $2 }'`
+ZRAM=`grep SwapTotal /proc/meminfo | awk '{ print $2 }'`
+KERNEL=`uname -r | cut -f 1 -d "/"`
+PATCH=`getprop ro.build.version.security_patch`
+DATA_ENCRYPTION=`getprop ro.crypto.state`
+IP_ON=false
+LOGO_ON=true
+
+# Truncate those having 0 values from output of `uptime -p`
+UPTIME=`uptime -p | sed "s/ 0 [^ ]*,//g" | sed "s/up //"`
+
+# Determine SELinux status without root access
+cat /sys/fs/selinux/enforce >/dev/null 2>&1
+[ $? -eq 0 ] && SELINUX="Permissive" || SELINUX="Enforcing"
+
+show_help () {
+# Print help message
+    margin="  "
+    padding=-14
+    printf "USAGE: $PROGNAME [-h, --help] [-i, --ip] [-o, --off]\n"
+    printf "%46s\n \n" "[-d, --distros] [--DISTRO_NAME]"
+
+    printf "$margin%${padding}s %s\n"\
+        "--DISTRO_NAME" "The distro's ascii art to print." \
+        "" "The default is android logo." \
+        "-d, --distros" "Show available distro logos." \
+        "-o, --off" "Disable ascii art logo." \
+        "-i, --ip" "Show public IPv4 address." \
+        "-h, --help" "Print this help message."
+
+    printf " \nExample: \`$PROGNAME --kali\` --> will print kali logo\n"
+    exit 0
+}
+
+show_distros () {
+# Show available distros
+    echo "Available distro logos:"
+    for name in `ls $LOGODIR`
+    do
+        printf "  %s\n" $name
+    done
+    exit 0
+}
+
+print_distro_logo () {
+# Print distro ascii art logo
+    cat "$LOGODIR/$LOGO"
+}
+
+get_public_ip () {
+    ip=`curl -s ifconfig.me`
+    ip=${ip:="<Unkown>"}
+    echo "$ip"
+}
+
+print_sysinfo () {
+# Print all the information
+    padding=15
+    printf "%${padding}s : %s\n"\
+        "Phone Model" "$BRAND $MODEL"\
+        "Codename" "$CODENAME"\
+        "OS Type" "Android $ANDROID_VERSION ($CPUARCH)"\
+        "Security Patch" "$PATCH"\
+        "/data Status" "$DATA_ENCRYPTION"\
+        "SELinux" "$SELINUX"\
+        "CPU" "$CPUCORE core(s) @ $((CPUFREQ/1000))MHz"\
+        "Memory" "$((MEMAVAIL/1024))MiB / $((MEMTOTAL/1024))MiB"\
+        "zRAM Size" "$((ZRAM/1024))MiB"\
+        "Kernel" "$KERNEL"\
+        "Uptime" "$UPTIME"
+
+    $IP_ON && printf "%${padding}s : %s\n" "Public IPv4" `get_public_ip`
+
+    printf " \n"
+}
+
+print_error () {
+# Print an error message
+    echo "Invalid option: '$1'. Type \`$PROGNAME -h\` to show help."
+    exit 1
+}
+
+# Script starts here
+for opt in $@
+do
+    case $opt in
+        -h|--help)
+            show_help
+            ;;
+        -d|--distros)
+            show_distros
+            ;;
+        -o|--off)
+            LOGO_ON=false
+            ;;
+        -i|--ip)
+            IP_ON=true
+            ;;
+        ?(-)-[Aa]ndroid|?(-)-[Aa]rch|?(-)-[Bb]lack[Aa]rch|?(-)-[Bb][Ss][Dd]|?(-)-[Ff]ree[Bb][Ss][Dd]|?(-)-[Gg]entoo|?(-)-[Kk]ali|?(-)-[Mm]ac[Oo][Ss]|?(-)-[Ss]cientific|?(-)-[Tt]ails|?(-)-[Tt]rue[Oo][Ss]|?(-)-[Vv]enom)
+            LOGO=`echo ${opt//*-} | tr 'A-Z' 'a-z'`
+            ;;
+        %)
+            ;;
+        *)
+            print_error $opt
+            ;;
+    esac
+done
+
+$LOGO_ON && print_distro_logo
+print_sysinfo
