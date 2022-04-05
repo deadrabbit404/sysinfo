@@ -26,9 +26,16 @@ LOGO_ON=true
 # Truncate those having 0 values from output of `uptime -p`
 UPTIME=`uptime -p | sed "s/ 0 [^ ]*,//g" | sed "s/up //"`
 
-# Determine SELinux status without root access
-cat /sys/fs/selinux/enforce >/dev/null 2>&1
-[ $? -eq 0 ] && SELINUX="Permissive" || SELINUX="Enforcing"
+get_selinux_status () {
+    if [ `id -u` -eq 0 ]; then
+        selinux=`su -c getenforce`
+    else
+        # Determine SELinux status without root access
+        cat /sys/fs/selinux/enforce >/dev/null 2>&1
+        [ $? -eq 0 ] && selinux="Permissive" || selinux="Enforcing"
+    fi
+    echo $selinux
+}
 
 show_help () {
 # Print help message
@@ -36,13 +43,13 @@ show_help () {
     padding=-14
     printf "USAGE: $PROGNAME [-h, --help] [-v, --version]\n"
     printf "%${padding}s %s\n" "" "[-i, --ip] [-o, --off]"\
-           "" "[-d, --distro] [--DISTRO_NAME]"
+           "" "[-l, --logos] [--DISTRO_NAME]"
     printf " \n"
 
     printf "$margin%${padding}s %s\n"\
         "--DISTRO_NAME" "The distro logo to print." \
         "" "The default is android logo." \
-        "-d, --distros" "Show available distro logos." \
+        "-l, --logos" "List available distro logos." \
         "-o, --off" "Disable ascii art logo." \
         "-i, --ip" "Show public IPv4 address." \
         "-v, --version" "Show version information." \
@@ -58,8 +65,8 @@ show_version () {
     exit 0
 }
 
-show_distros () {
-# Show available distros
+list_distros () {
+# list all available distro logos
     echo "Available distro logos:"
     for name in `ls $LOGODIR`
     do
@@ -88,7 +95,7 @@ print_sysinfo () {
         "OS Type" "Android $ANDROID_VERSION ($CPUARCH)"\
         "Security Patch" "$PATCH"\
         "/data Status" "$DATA_ENCRYPTION"\
-        "SELinux" "$SELINUX"\
+        "SELinux" "`get_selinux_status`"\
         "CPU" "$CPUCORE core(s) @ $((CPUFREQ/1000))MHz"\
         "Memory" "$((MEMAVAIL/1024))MiB / $((MEMTOTAL/1024))MiB"\
         "zRAM Size" "$((ZRAM/1024))MiB"\
@@ -113,8 +120,8 @@ do
         -h|--help)
             show_help
             ;;
-        -d|--distros)
-            show_distros
+        -l|--logos)
+            list_distros
             ;;
         -v|--version)
             show_version
