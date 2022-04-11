@@ -6,6 +6,8 @@
 
 PROGNAME=${0##*/}
 LOGODIR="/sdcard/t-ui/logos"
+BEHAVIORXML="/sdcard/t-ui/behavior.xml"
+
 LOGO="android"
 BRAND=`getprop ro.product.brand`
 MODEL=`getprop ro.product.model`
@@ -60,7 +62,7 @@ show_help () {
 }
 
 show_version () {
-    version="v0.1"
+    version="v0.1.1"
     printf "sysinfo, version $version\n"
     exit 0
 }
@@ -114,6 +116,9 @@ print_error () {
 }
 
 # Script starts here
+# Get the alias_param_marker used by the theme
+ALIAS_PARAM_MARKER=`grep 'alias_param_marker' $BEHAVIORXML | sed "s/.*\"\(.*\)\"\/>.*\$/\1/"`
+
 for opt in $@
 do
     case $opt in
@@ -135,7 +140,7 @@ do
         ?(-)-[Aa]ndroid|?(-)-[Aa]rch|?(-)-[Bb]lack[Aa]rch|?(-)-[Bb][Ss][Dd]|?(-)-[Ff]ree[Bb][Ss][Dd]|?(-)-[Gg]entoo|?(-)-[Kk]ali|?(-)-[Mm]ac[Oo][Ss]|?(-)-[Ss]cientific|?(-)-[Tt]ails|?(-)-[Tt]rue[Oo][Ss]|?(-)-[Vv]enom)
             LOGO=`echo ${opt//*-} | tr 'A-Z' 'a-z'`
             ;;
-        %)
+        $ALIAS_PARAM_MARKER)
             ;;
         *)
             print_error $opt
