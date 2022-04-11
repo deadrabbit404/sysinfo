@@ -8,7 +8,7 @@ art logo on your screen.
 ![Screenshot](image/sysinfo.jpg)
 
 ## Features
-**sysinfo will grab details about your:**
+**sysinfo will get details about your:**
 * Phone brand, model, and codename
 * Android version and cpu architecture
 * Android security patch
@@ -30,11 +30,15 @@ art logo on your screen.
 * `restart` or `refresh` t-ui when setup is done.
 
 **Option 2: Via manual download**
-* Download the latest release of sysinfo and extract it to your internal storage.
-* On t-ui launcher, change directory to the extracted folder.  
-Example: `cd sysinfo-0.1`
+* Download [latest release](https://github.com/deadrabbit404/sysinfo/releases/tag/v0.1.1)
+of sysinfo and extract it to your internal storage.
+* On t-ui launcher, change directory to the extracted folder.   
+Example: `cd sysinfo-0.1.1`
 * Then type `sh setup.sh` and wait for installation to finish.
 * When setup is done, `restart` or `refresh` t-ui.
+
+## How  to run
+To execute the script, just type `sysinfo`. For more info, type `sysinfo -h` to print help message.
 
 ## Themes
 Looking for cool themes like the one in the image above? Visit [M4dGun's t-ui themes](https://github.com/M4dGun/t-ui_themes)
