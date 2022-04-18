@@ -22,20 +22,16 @@ art logo on your screen.
 * An optional parameter to choose what logo to print
 * And an optional parameter to print public IPv4 address
 
+## Prerequisite
+* Termux
+
+_Install termux from Playstore or F-droid_
 ## Installation
-**Option 1: Via termux**
+**Open termux app and run the following commands:**
 * `apt update && apt install -y git`
 * `git clone https://github.com/deadrabbit404/sysinfo.git`
 * `cd sysinfo && bash setup.sh`
-* `restart` or `refresh` t-ui when setup is done.
-
-**Option 2: Via manual download**
-* Download [latest release](https://github.com/deadrabbit404/sysinfo/releases/tag/v0.1.1)
-of sysinfo and extract it to your internal storage.
-* On t-ui launcher, change directory to the extracted folder.   
-Example: `cd sysinfo-0.1.1`
-* Then type `sh setup.sh` and wait for installation to finish.
-* When setup is done, `restart` or `refresh` t-ui.
+* `restart` or `refresh` t-ui when setup is done
 
 ## How  to run
 To execute the script, just type `sysinfo`. For more info, type `sysinfo -h` to print help message.
