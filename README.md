@@ -25,7 +25,9 @@ art logo on your screen.
 ## Prerequisite
 * Termux
 
-_Install termux from Playstore or F-droid_
+_You can obtain termux from [F-droid](https://f-droid.org/en/packages/com.termux/)
+or from its github repo from [here](https://github.com/termux/termux-app)._
+
 ## Installation
 **Open termux app and run the following commands:**
 * `apt update && apt install -y git`
@@ -34,7 +36,7 @@ _Install termux from Playstore or F-droid_
 * `restart` or `refresh` t-ui when setup is done
 
 ## How  to run
-To execute the script, just type `sysinfo`. For more info, type `sysinfo -h` to print help message.
+On t-ui launcher, just type `sysinfo`. For more info, type `sysinfo -h` to print help message.
 
 ## Themes
 Looking for cool themes like the one in the image above? Visit [M4dGun's t-ui themes](https://github.com/M4dGun/t-ui_themes)
